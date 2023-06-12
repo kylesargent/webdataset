@@ -255,6 +255,7 @@ def tarfile_samples(
     handler: Callable[[Exception], bool] = reraise_exception,
     select_files: Optional[Callable[[str], bool]] = None,
     rename_files: Optional[Callable[[str], str]] = None,
+    fname_splitter=None,
 ) -> Iterable[Dict[str, Any]]:
     """Given a stream of tar files, yield samples.
 
@@ -270,7 +271,11 @@ def tarfile_samples(
     files = tar_file_expander(
         streams, handler=handler, select_files=select_files, rename_files=rename_files
     )
-    samples = group_by_keys(files, handler=handler)
+    samples = group_by_keys(
+        files,
+        keys=base_plus_ext if fname_splitter is None else fname_splitter,
+        handler=handler,
+    )
     return samples
 
 

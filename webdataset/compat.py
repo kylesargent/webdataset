@@ -100,6 +100,7 @@ class WebDataset(DataPipeline, FluidInterface):
         nodesplitter=shardlists.single_node_only,
         select_files=None,
         rename_files=None,
+        fname_splitter=None,
         verbose=False,
     ):
         super().__init__()
@@ -139,10 +140,14 @@ class WebDataset(DataPipeline, FluidInterface):
                     handler=handler,
                     select_files=select_files,
                     rename_files=rename_files,
+                    fname_splitter=fname_splitter,
                 )
             )
         else:
             assert cache_size == -1 or cache_size > 0
+            if fname_splitter is not None:
+                raise NotImplementedError
+
             self.append(
                 cache.cached_tarfile_to_samples(
                     handler=handler,
